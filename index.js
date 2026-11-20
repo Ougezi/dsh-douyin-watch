@@ -37,9 +37,12 @@ const DEFAULTS = {
   chromePath: '',
   scrollRounds: 4,
   scrollStepPx: 700,
+  // play mode (M2)
+  playSeekTo: 2,
+  playFrame: true,
   // M0 additions
   browserChannel: 'auto',
-  dailyMinutes: 30,
+  dailyMinutes: 180,
   dailyModelCalls: 120,
   enableKb: true,
   enableOps: false,
@@ -65,6 +68,8 @@ function resolveConfig(raw) {
   cfg.dailyMinutes = clampInt(cfg.dailyMinutes, 0, 1440, DEFAULTS.dailyMinutes)
   cfg.dailyModelCalls = clampInt(cfg.dailyModelCalls, 0, 10000, DEFAULTS.dailyModelCalls)
   cfg.dailyWriteActions = clampInt(cfg.dailyWriteActions, 0, 200, DEFAULTS.dailyWriteActions)
+  cfg.playSeekTo = clampInt(cfg.playSeekTo, 0, 3600, DEFAULTS.playSeekTo)
+  cfg.playFrame = cfg.playFrame !== false
   const h = Array.isArray(cfg.hours) && cfg.hours.length === 2 ? cfg.hours.map(Number) : DEFAULTS.hours
   cfg.hours = [clampInt(h[0], 0, 23, 8), clampInt(h[1], 1, 24, 24)]
   if (cfg.hours[1] <= cfg.hours[0]) cfg.hours = [cfg.hours[0], 24]

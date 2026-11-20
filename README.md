@@ -85,7 +85,7 @@ scrollRounds: 4
 scrollStepPx: 700
 
 # 预算（从 journal.jsonl 派生，不各自计数）
-dailyMinutes: 30
+dailyMinutes: 180
 dailyModelCalls: 120
 
 # 能力开关：关掉的能力不会注册工具，模型根本看不到

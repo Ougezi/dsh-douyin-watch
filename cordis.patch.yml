@@ -29,7 +29,7 @@
         scrollStepPx: 700
 
         # --- budgets (derived from journal.jsonl) ---
-        dailyMinutes: 30
+        dailyMinutes: 180
         dailyModelCalls: 120
 
         # --- surface C: read-only knowledge source ---

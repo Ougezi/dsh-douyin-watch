@@ -73,7 +73,7 @@ hours: [8, 24]        # 允许观看的本地时段
 scrollRounds: 4       # 每轮滚动几次触发加载
 scrollStepPx: 700     # 每次滚动多少像素
 
-dailyMinutes: 30      # 每日观看分钟预算（从 journal 派生）
+dailyMinutes: 180     # 每日「打开的视频总时长」预算（从 journal 派生）
 dailyModelCalls: 120  # 每日模型调用预算（真实成本闸门）
 
 enableKb: true        # C 层只读知识源（M1 起有工具）
