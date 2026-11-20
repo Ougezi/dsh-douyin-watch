@@ -27,12 +27,17 @@ dsh plugin add /absolute/path/to/dsh-douyin-watch
 
 | 工具 | 作用 |
 | --- | --- |
-| `dy_watch` | 看一轮：滚动、收没看过的卡、截封面、写日志与日报 |
-| `dy_status` | 额度、闸门判定、浏览器状态、数据目录、兴趣概要；`closeBrowser=true` 关掉专用窗口 |
+| `dy_watch` | 看一轮。`mode: cards` 只读卡片与封面（**零模型成本**）；`mode: play` 打开播放器、记录时长并抓一帧 |
+| `dy_status` | 额度、预算、三层开关、浏览器通道与状态、近期事件、兴趣概要；`closeBrowser=true` 关掉专用窗口 |
 | `dy_report` | 生成/读取某天的日报 Markdown |
-| `dy_diagnose` | 倒出页面真实状态（卡片数、滚动容器、验证码、登录墙、前几条卡片原文） |
+| `dy_diagnose` | 倒出页面真实状态（卡片数、滚动容器、验证码、登录墙、通道、前几条卡片原文） |
+| `kb_hot` | 读抖音热榜（**匿名可用**），落进本地知识库 |
+| `kb_video` | 打开某条视频的播放器，读时长/元数据并抓一帧；可用 `modalId` 直接重开 |
+| `kb_search` | 搜索关键词；未登录时明确返回 `needs-login` |
+| `kb_save` | 把当天采集的热榜/视频/搜索落成 Markdown |
+| `ops_status` / `ops_trend` | **只读**运营探测：账号是否登录、创作者中心可达性。写操作未实现（见下） |
 
-## 额度（四道闸门）
+## 额度与预算（四道闸门 + 两道预算）
 
 | 闸门 | 默认 | 拒绝码 |
 | --- | --- | --- |
@@ -40,6 +45,11 @@ dsh plugin add /absolute/path/to/dsh-douyin-watch
 | 每日轮数 | 4 | `quota-rounds` |
 | 两轮间隔 | 30 分钟 | `cooldown` |
 | 允许时段 | 08:00–24:00 | `outside-hours` |
+| 每日「打开的视频总时长」 | 180 分钟 | `quota-minutes` |
+| 每日模型调用 | 120 次 | `quota-model-calls` |
+
+后两道从 `journal.jsonl` 派生，只在 `mode: play` 下消耗：每抓一帧记 1 次模型调用，
+每打开一条视频按它的时长计入分钟预算（**不是**墙钟时间——我们是 seek 后暂停，不假装看完了）。
 
 ## 记忆：衰减 + 间隔重复
 
@@ -59,10 +69,15 @@ $DSH_HOME/plugin-data/dsh-douyin-watch/
   quota.json        今日计数
   seen.json         看过就不再看的指纹（上限 5000）
   watch-log.jsonl   追加式观看记录
+  journal.jsonl     三层统一事件流（预算与日报的派生源）
+  knowledge.jsonl   只读层采集到的热榜/视频/搜索条目
   interests.json    衰减后的兴趣画像
   covers/<日期>/    每条一张封面 PNG
+  frames/<日期>/    play 模式抓到的视频帧
+  knowledge/<日期>.md  kb_save 的落盘
   reports/<日期>.md 日报
-  profile/          专用 Chrome 档案（登录态只存在这里）
+  profile-chrome/   各浏览器通道各自的档案（登录态只存在这里）
+  profile-edge/
 ```
 
 ## 配置
@@ -103,21 +118,36 @@ enableOps: false
 
 ## 已知限制（诚实版）
 
-1. **它不播放视频。** 抖音 PC 端只有点开卡片才挂载真正的 `<video>`，推荐流页面本身没有播放器。所以"观看" = 读卡片文案 + 存封面帧。
-2. **需要一次手动登录。** 没登录态时返回 `needs-login`，请在插件自己的 Chrome 窗口里扫码。
-3. **依赖抖音页面结构。** 卡片靠语义类名后缀匹配、文案靠 token 解析。改版会让它解析不出来——跑 `dy_diagnose` 再校准。
-4. **登录弹窗会被自动摘掉。** 那是个 `position:fixed`、`z-index:9999` 的全屏遮罩，不处理会把扫码框拍进封面。插件在截图前把它 `display:none`，顺带让可见卡片数从 10 变成 29。
+1. **`cards` 模式不播放视频。** 推荐流页面本身没有播放器，只有点开卡片才挂载 `<video>`。所以 `cards` 的"观看" = 读卡片文案 + 存封面帧；要真播放用 `mode: play`。
+2. **`play` 模式会抓一帧，但不代表"看懂了"。** 帧存盘并返回路径（`frameSuspect` 会标出疑似黑帧/海报图）。要不要把帧交给模型，由调用方决定，费用也由那次调用产生。
+3. **搜索需要登录。** 抖音未登录时 `/search/<kw>` 只有登录墙，`kb_search` 会返回 `needs-login` 而不是空列表。
+4. **评论需要登录，因此写操作未实现。** Spike 显示点任何互动只弹通用登录框、评论 DOM 为 0。`ops` 层目前只有只读的 `ops_status` / `ops_trend`；点赞、评论、回复、私信、发布的闸门（`policy.assertWriteAllowed`）已就绪并有测试，但**没有发布未经验证的写操作代码**。
+5. **依赖抖音页面结构。** 卡片靠语义类名后缀匹配、文案靠 token 解析。改版会让它解析不出来——跑 `dy_diagnose` 再校准。
+6. **登录弹窗会被自动摘掉。** 那是个 `position:fixed`、`z-index:9999` 的全屏遮罩，不处理会把扫码框拍进封面。插件在截图前把它 `display:none`，顺带让可见卡片数从 10 变成 29。
+7. **播放器有首次使用引导浮层**（"我知道了"），不摘掉会把引导拍成"帧"。
 
 ## 开发
 
 ```bash
-node scripts/test-parse.mjs      # 解析器回归（不需要浏览器）
-node scripts/smoke.mjs --probe   # 只起浏览器探测页面
-node scripts/smoke.mjs           # 完整一轮：探测 + 看 2 条 + 出日报
-node scripts/verify-install.mjs  # 按 ToolDefinition 契约校验注册
+node scripts/test-parse.mjs         # 解析器回归（不需要浏览器）
+node scripts/verify-install.mjs     # ToolDefinition 契约校验
+node scripts/smoke-channel.mjs edge # 通道与诊断（edge/chrome）
+node scripts/smoke.mjs              # cards 模式完整一轮
+node scripts/smoke-kb.mjs edge      # 知识源：热榜/视频+帧/搜索/落盘
+node scripts/smoke-play.mjs edge    # play 模式：真播放+抓帧+双预算
+node scripts/smoke-ops.mjs edge     # 运营层：只读工具与写闸门
+node scripts/smoke-failures.mjs edge# 失败路径：code+hint 契约
+node scripts/spike*.mjs             # 页面结构探针（改版后校准用）
 ```
 
-`smoke.mjs` 会真的消耗额度，介意的话设 `minIntervalMin: 0` 再用。
+这些冒烟会真的起浏览器、真的消耗额度——建议配临时 `DSH_HOME` 跑，别动真实账本：
+`$env:DSH_HOME = "$env:TEMP\dy-test"`。
+
+## 成本
+
+- `cards` 模式与日报：**0 模型调用**。
+- `play` 模式：每条抓一帧算 1 次（`dailyModelCalls` 管住）。
+- 只读层（`kb_*`）：只处理文本与本地文件，**0 模型调用**。
 
 ## License
 

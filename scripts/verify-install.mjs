@@ -38,8 +38,17 @@ try {
   process.exit(1)
 }
 console.log('registered:', tools.join(', '))
-if (tools.length !== 4) {
-  console.error('FAIL: expected 4 tools')
+// The exact count grows as surfaces are added, so assert the contract instead:
+// the watching surface must always be present, and every tool must have passed
+// the shape checks in the fake registry above.
+const required = ['dy_watch', 'dy_status', 'dy_report', 'dy_diagnose']
+const missing = required.filter((n) => !tools.includes(n))
+if (missing.length) {
+  console.error(`FAIL: missing required tools: ${missing.join(', ')}`)
   process.exit(1)
 }
-console.log('OK: installed module loads and registers')
+if (tools.length < required.length) {
+  console.error(`FAIL: expected at least ${required.length} tools, got ${tools.length}`)
+  process.exit(1)
+}
+console.log(`OK: installed module loads and registers (${tools.length} tools, contract-checked)`)

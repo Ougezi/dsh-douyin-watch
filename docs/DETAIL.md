@@ -14,13 +14,31 @@
 | 每日轮数 | 4 | `quota-rounds` |
 | 两次间隔 | 30 分钟 | `cooldown` |
 | 允许时段 | 08:00–24:00 | `outside-hours` |
+| 每日打开视频总时长 | 180 分钟 | `quota-minutes` |
+| 每日模型调用 | 120 次 | `quota-model-calls` |
 
-## 四个工具
+## 工具
 
-- `dy_watch` — 看一轮（可选 `cards` 指定本轮条数，不能超过 `cardsPerRound`）
-- `dy_status` — 额度、闸门判定、浏览器状态、数据目录、兴趣概要；`closeBrowser: true` 关掉专用窗口
+**A 自主观看（`dy_*`）**
+
+- `dy_watch` — 看一轮。`mode: cards`（默认）只读卡片与封面，零模型成本；`mode: play` 打开播放器、记录时长并抓一帧（每帧记 1 次模型调用预算）。可选 `cards` 指定本轮条数。
+- `dy_status` — 额度、预算、三层开关、浏览器通道与状态、近期事件、兴趣概要；`closeBrowser: true` 关掉专用窗口
 - `dy_report` — 生成并返回某天的日报 Markdown + 文件路径
-- `dy_diagnose` — 把页面此刻的真实状态倒出来（卡片数、滚动容器、验证码、登录墙、前几条卡片原文）
+- `dy_diagnose` — 把页面此刻的真实状态倒出来（卡片数、滚动容器、验证码、登录墙、通道、前几条卡片原文）
+
+**C 只读知识源（`kb_*`，默认开启）**
+
+- `kb_hot` — 热榜，匿名可用
+- `kb_video` — 打开视频播放器，读时长/元数据并抓一帧；可用 `modalId` 直接重开
+- `kb_search` — 搜索；未登录返回 `needs-login`
+- `kb_save` — 把当天采集内容落成 Markdown
+
+**B 运营（`ops_*`，默认关闭）**
+
+- `ops_status` — 账号是否登录、写开关状态、今日写预算
+- `ops_trend` — 创作者中心可达性（未登录返回 `needs-login`）
+
+> **写操作（点赞/评论/回复/私信/发布）没有实现。** Spike 显示它们全部需要登录，且未登录时点任何互动只弹通用登录框。闸门已在 `policy.assertWriteAllowed()` 就绪并有测试覆盖；实现前需要账号本人登录并单独验收。这里不发布未经验证的写操作代码。
 
 ## 记忆怎么衰减
 

@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Douyin watch loop",
-    "description": "Watch the Douyin recommend feed within a daily quota, keep a decayed interest memory and write a daily report.",
+    "description": "One browser substrate, three surfaces: autonomous watching with quota, decayed memory and a daily report (optionally with real playback and frames); a read-only knowledge source; and read-only creator probes. Works with Chrome and Edge.",
     "detail": "docs/DETAIL.md"
   }
 }
