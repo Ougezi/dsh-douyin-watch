@@ -23,6 +23,7 @@ import * as session from './lib/session.js'
 import { capabilities } from './lib/policy.js'
 import { buildWatchTools } from './lib/surfaces/watch.js'
 import { buildKbTools } from './lib/surfaces/kb.js'
+import { buildOpsTools } from './lib/surfaces/ops.js'
 import { clampInt } from './lib/tool-util.js'
 
 export const inject = ['tools']
@@ -90,8 +91,9 @@ export function apply(ctx, config) {
   const builders = []
   if (caps.watch) builders.push(buildWatchTools)
   if (caps.kb) builders.push(buildKbTools)
-  // ops is added in M3; the gate already exists so enabling it early cannot
-  // accidentally expose write tools.
+  if (caps.ops) builders.push(buildOpsTools)
+  // No write tool exists yet on purpose: every douyin write surface needs a
+  // signed-in account to verify, and unverified write code is not shipped.
 
   const registered = []
   for (const build of builders) {
