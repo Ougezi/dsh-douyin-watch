@@ -1,0 +1,13 @@
+node_modules/
+*.log
+.DS_Store
+Thumbs.db
+
+# never commit local browser state or captured watching data
+profile/
+covers/
+reports/
+quota.json
+seen.json
+interests.json
+watch-log.jsonl

@@ -1,0 +1,15 @@
+# Insert the Douyin watch loop as a Host-only bundle.
+#
+# One row, one plugin: it registers four model tools (dy_watch / dy_status /
+# dy_report / dy_diagnose) and needs nothing else from the Loader. Every knob is
+# optional and has a default in index.js -> resolveConfig().
+- insert:
+    - id: douyin-watch
+      name: "dsh-douyin-watch"
+      config:
+        cardsPerRound: 10
+        dailyCards: 40
+        dailyRounds: 4
+        minIntervalMin: 30
+        hours: [8, 24]
+        headless: false

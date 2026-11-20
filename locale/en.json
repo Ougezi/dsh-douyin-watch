@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Douyin watch loop",
+    "description": "Watch the Douyin recommend feed within a daily quota, keep a decayed interest memory and write a daily report.",
+    "detail": "docs/DETAIL.md"
+  }
+}
