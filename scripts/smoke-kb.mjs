@@ -58,6 +58,19 @@ ok(Number(video.video?.durationSec) > 0, 'kb_video returns a positive duration')
 ok(Boolean(video.frameFile) && fs.existsSync(video.frameFile), 'kb_video wrote a frame file')
 ok(video.frameSuspect !== true, 'frame is not suspiciously small (not a black frame)')
 
+// ---- kb_video reopen by modalId (share-link style input) ----
+if (/^\d+$/.test(String(video.modalId ?? ''))) {
+  const reopened = await tools.get('kb_video').execute({ modalId: `https://www.douyin.com/video/${video.modalId}`, frame: false })
+  console.log('kb_video(reopen):', reopened.ok ? `modalId=${reopened.modalId}` : `${reopened.code}`)
+  ok(reopened.ok === true, 'kb_video accepts a share link and reopens')
+  ok(String(reopened.modalId) === String(video.modalId), 'reopened modalId matches')
+}
+
+// ---- kb_video rejects junk input with an actionable code ----
+const junk = await tools.get('kb_video').execute({ modalId: '不是链接', frame: false })
+ok(junk.ok === false && junk.code === 'invalid-argument', 'kb_video rejects an unparsable modalId')
+ok(typeof junk.hint === 'string' && junk.hint.length > 10, 'invalid-argument carries a hint')
+
 // ---- kb_search (login-gated today) ----
 const search = await tools.get('kb_search').execute({ keyword: '美食', limit: 5 })
 console.log('kb_search:', search.ok ? `count=${search.count}` : `${search.code}`)

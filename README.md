@@ -38,9 +38,9 @@ dsh plugin add /absolute/path/to/dsh-douyin-watch
 | `dy_report` | 生成/读取某天的日报 Markdown |
 | `dy_diagnose` | 倒出页面真实状态（卡片数、滚动容器、验证码、登录墙、通道、前几条卡片原文） |
 | `dy_login` | 打开插件自己的浏览器并报告登录状态；未登录时引导你扫码（不代替输入、不绕验证码） |
-| `kb_hot` | 读抖音热榜（**匿名可用**），落进本地知识库 |
-| `kb_video` | 打开某条视频的播放器，读时长/元数据并抓一帧；可用 `modalId` 直接重开 |
-| `kb_search` | 搜索关键词；未登录时明确返回 `needs-login` |
+| `kb_hot` | 读抖音热榜（**匿名可用**）；`limit` 超过首屏会自动滚动补页，落进本地知识库 |
+| `kb_video` | 打开某条视频的播放器，读时长/元数据并抓一帧；`modalId` 可传纯数字、含 `modal_id=` 的地址或 `/video/<id>` 分享链接 |
+| `kb_search` | 搜索关键词；未登录返回 `needs-login`，上游 50x 返回 `upstream-error`，改版返回 `no-results` |
 | `kb_save` | 把当天采集的热榜/视频/搜索落成 Markdown |
 | `ops_status` / `ops_trend` | **只读**运营探测：账号是否登录、创作者中心可达性。写操作未实现（见下） |
 

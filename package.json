@@ -1,6 +1,6 @@
 {
   "name": "dsh-douyin-watch",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "private": true,
   "type": "module",
   "description": "One browser substrate, three surfaces for Douyin: autonomous watching (quota, decayed memory, daily report, optional real playback), a read-only knowledge source (hot list, video, search, Markdown), and read-only creator probes. Chrome and Edge.",

@@ -19,6 +19,7 @@ const suites = [
   { name: 'parser', file: 'scripts/test-parse.mjs' },
   { name: 'contract', file: 'scripts/verify-install.mjs' },
   { name: 'login', file: 'scripts/test-login.mjs', args: [channel] },
+  { name: 'search', file: 'scripts/test-search.mjs', args: [channel] },
   { name: 'failures', file: 'scripts/smoke-failures.mjs', args: [channel] }
 ]
 if (full) {

@@ -6,6 +6,7 @@
  *   node scripts/test-parse.mjs
  */
 import { parseCard, parseLikes, parseDuration, cardId } from '../lib/adapters/douyin/feed.js'
+import { modalIdFrom } from '../lib/adapters/douyin/player.js'
 
 const samples = [
   {
@@ -94,6 +95,22 @@ const b = parseCard(samples[0].text)
 check('cardId stable', cardId(a), cardId(b))
 const c = parseCard(samples[1].text)
 check('cardId differs', cardId(a) !== cardId(c), true)
+
+// a user may paste an id, a modal URL, or a share link — all must resolve
+check('modalIdFrom bare id', modalIdFrom('7691311331126807842'), '7691311331126807842')
+check(
+  'modalIdFrom modal url',
+  modalIdFrom('https://www.douyin.com/jingxuan?modal_id=7691311331126807842'),
+  '7691311331126807842'
+)
+check(
+  'modalIdFrom share link',
+  modalIdFrom('https://www.douyin.com/video/7691311331126807842'),
+  '7691311331126807842'
+)
+check('modalIdFrom share link with query', modalIdFrom('https://www.douyin.com/video/7691311331126807842?previous_page=app_code_link'), '7691311331126807842')
+check('modalIdFrom rejects junk', modalIdFrom('不是链接'), null)
+check('modalIdFrom rejects empty', modalIdFrom(''), null)
 
 if (failed) {
   console.error(`\n${failed} check(s) failed`)

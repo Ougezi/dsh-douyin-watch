@@ -29,9 +29,9 @@
 
 **C 只读知识源（`kb_*`，默认开启）**
 
-- `kb_hot` — 热榜，匿名可用
-- `kb_video` — 打开视频播放器，读时长/元数据并抓一帧；可用 `modalId` 直接重开
-- `kb_search` — 搜索；未登录返回 `needs-login`
+- `kb_hot` — 热榜，匿名可用；`limit` 超过首屏会自动滚动补页（最多 4 次）
+- `kb_video` — 打开视频播放器，读时长/元数据并抓一帧；`modalId` 接受纯数字、`?modal_id=` 地址或 `/video/<id>` 分享链接
+- `kb_search` — 搜索；未登录 `needs-login`，上游 50x `upstream-error`，改版 `no-results`，参数不合法 `invalid-argument`
 - `kb_save` — 把当天采集内容落成 Markdown
 
 **B 运营（`ops_*`，默认关闭）**
