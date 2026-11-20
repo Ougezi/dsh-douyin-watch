@@ -1,9 +1,9 @@
 {
   "name": "dsh-douyin-watch",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "type": "module",
-  "description": "Autonomous Douyin watching with a quota, decayed interest memory and a daily report.",
+  "description": "One browser substrate, three surfaces for Douyin: autonomous watching (quota, decayed memory, daily report, optional real playback), a read-only knowledge source (hot list, video, search, Markdown), and read-only creator probes. Chrome and Edge.",
   "main": "./index.js",
   "exports": {
     ".": "./index.js",
@@ -25,6 +25,21 @@
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
+    },
+    "engines": {
+      "dsh": ">=0.2.2-rc.1"
     }
-  }
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ougezi/dsh-douyin-watch.git"
+  },
+  "keywords": [
+    "deepseek",
+    "harness",
+    "dsh",
+    "dsh-plugin",
+    "douyin"
+  ]
 }

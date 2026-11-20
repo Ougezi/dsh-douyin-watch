@@ -15,6 +15,12 @@ An autonomous Douyin watch loop as a [DeepSeek Harness](https://github.com/deeps
 - **失败必须可见**：每次拒绝都返回机器可读的 `code` + 人可读的 `hint`。额度拒绝如果静默发生，用户分不清是"到限额了"还是"插件坏了"。
 - **改版可诊断**：`dy_diagnose` 把页面此刻的真实状态倒出来，抖音改版时靠它重新校准，不用瞎猜。
 
+## 要求
+
+- **DSH >= 0.2.2-rc.1**（`package.json` 的 `dsh.engines.dsh` 会由 Plugin Manager 校验）
+- **Node 22+**（用到全局 `WebSocket`）
+- 本机装有 **Chrome 或 Edge**（两者皆为 Chromium，实测 Edge 157）
+
 ## 安装
 
 ```bash
@@ -23,7 +29,7 @@ dsh plugin add /absolute/path/to/dsh-douyin-watch
 
 或在 DSH 里用 Plugin Manager 的 Add plugin 指向这个目录。装好后重载插件行（停用再启用）即可，不必重启 DSH。
 
-## 四个工具
+## 工具
 
 | 工具 | 作用 |
 | --- | --- |
