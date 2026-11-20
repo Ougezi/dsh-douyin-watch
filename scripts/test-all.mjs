@@ -9,6 +9,9 @@
  * DSH_HOME when you care about the real ledger.
  */
 import { spawnSync } from 'node:child_process'
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
 
 const full = process.argv.includes('--full')
 const channel = process.argv.includes('--chrome') ? 'chrome' : 'edge'
@@ -27,13 +30,21 @@ if (full) {
   )
 }
 
+// Every suite gets its own DSH_HOME. Without this, a suite that intentionally
+// writes synthetic journal rows (smoke-failures) makes a later suite's
+// "model calls are zero" assertion fail — a test-isolation bug, not a product one.
+const runRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'dy-testall-'))
+console.log(`isolated homes under ${runRoot}`)
+
 const results = []
 for (const suite of suites) {
   const started = Date.now()
+  const suiteHome = path.join(runRoot, suite.name)
+  fs.mkdirSync(suiteHome, { recursive: true })
   const res = spawnSync(process.execPath, [suite.file, ...(suite.args ?? [])], {
     stdio: 'pipe',
     encoding: 'utf8',
-    env: process.env
+    env: { ...process.env, DSH_HOME: suiteHome }
   })
   const ms = Date.now() - started
   const ok = res.status === 0
