@@ -7,6 +7,7 @@
  */
 import { parseCard, parseLikes, parseDuration, cardId } from '../lib/adapters/douyin/feed.js'
 import { modalIdFrom } from '../lib/adapters/douyin/player.js'
+import { parseComment } from '../lib/adapters/douyin/comments.js'
 
 const samples = [
   {
@@ -111,6 +112,24 @@ check(
 check('modalIdFrom share link with query', modalIdFrom('https://www.douyin.com/video/7691311331126807842?previous_page=app_code_link'), '7691311331126807842')
 check('modalIdFrom rejects junk', modalIdFrom('不是链接'), null)
 check('modalIdFrom rejects empty', modalIdFrom(''), null)
+
+// comments: captured live from https://www.douyin.com/video/7706790998765428730
+const c1 = parseComment('睡不醒啊 ... 带我练一练吧 6天前·浙江 0 分享 回复')
+check('comment author', c1 && c1.author, '睡不醒啊')
+check('comment content', c1 && c1.content, '带我练一练吧')
+check('comment age', c1 && c1.ageText, '6天前')
+check('comment location', c1 && c1.location, '浙江')
+check('comment likes', c1 && c1.likes, 0)
+
+const c2 = parseComment('你是个好人 ... 坚持不自律何尝不是一种自律呢 1周前·江苏 2 分享 回复')
+check('comment likes 2', c2 && c2.likes, 2)
+check('comment week age', c2 && c2.ageText, '1周前')
+
+const c3 = parseComment('撸铁2小时，拍摄1个半小时，修图20分钟，每个器材1组，一组2个 5天前·浙江 4 分享 回复')
+check('comment without author block', c3 && c3.author, null)
+check('comment without author keeps content', (c3 && c3.content || '').startsWith('撸铁2小时'), true)
+
+check('comment rejects non-comment', parseComment('全部评论'), null)
 
 if (failed) {
   console.error(`\n${failed} check(s) failed`)

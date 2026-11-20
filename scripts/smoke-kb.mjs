@@ -71,6 +71,20 @@ const junk = await tools.get('kb_video').execute({ modalId: '不是链接', fram
 ok(junk.ok === false && junk.code === 'invalid-argument', 'kb_video rejects an unparsable modalId')
 ok(typeof junk.hint === 'string' && junk.hint.length > 10, 'invalid-argument carries a hint')
 
+// ---- kb_comments (login-gated; read-only) ----
+if (/^\d+$/.test(String(video.modalId ?? ''))) {
+  const comments = await tools.get('kb_comments').execute({ modalId: video.modalId, limit: 5 })
+  if (comments.ok) {
+    console.log('kb_comments:', `count=${comments.count} scanned=${comments.scanned}`)
+    ok((comments.count ?? 0) > 0, 'kb_comments returned comments (signed in)')
+    ok(Boolean(comments.comments?.[0]?.content), 'comment carries content')
+  } else {
+    console.log('kb_comments:', comments.code)
+    ok(['needs-login', 'no-comments'].includes(comments.code), `kb_comments refusal code is expected (got ${comments.code})`)
+    ok(typeof comments.hint === 'string' && comments.hint.length > 10, 'kb_comments refusal carries a hint')
+  }
+}
+
 // ---- kb_search (login-gated today) ----
 const search = await tools.get('kb_search').execute({ keyword: '美食', limit: 5 })
 console.log('kb_search:', search.ok ? `count=${search.count}` : `${search.code}`)

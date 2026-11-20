@@ -41,6 +41,7 @@ dsh plugin add /absolute/path/to/dsh-douyin-watch
 | `kb_hot` | 读抖音热榜（**匿名可用**）；`limit` 超过首屏会自动滚动补页，落进本地知识库 |
 | `kb_video` | 打开某条视频的播放器，读时长/元数据并抓一帧；`modalId` 可传纯数字、含 `modal_id=` 的地址或 `/video/<id>` 分享链接 |
 | `kb_search` | 搜索关键词。**登录后可出真实结果**（按文本形状采集，搜索结果既不是推荐流卡片类名、也没有 `<a href>`）；未登录 `needs-login`，上游 50x `upstream-error`，页面空白 `no-results` |
+| `kb_comments` | 读某条视频的评论（**只读**，不点赞不回复）。走独立视频页 `/video/<id>`——模态播放器里没有评论 DOM；未登录 `needs-login` |
 | `kb_save` | 把当天采集的热榜/视频/搜索落成 Markdown |
 | `ops_status` / `ops_trend` | **只读**运营探测：账号是否登录、创作者中心可达性。写操作未实现（见下） |
 
