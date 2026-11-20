@@ -31,6 +31,7 @@ dsh plugin add /absolute/path/to/dsh-douyin-watch
 | `dy_status` | 额度、预算、三层开关、浏览器通道与状态、近期事件、兴趣概要；`closeBrowser=true` 关掉专用窗口 |
 | `dy_report` | 生成/读取某天的日报 Markdown |
 | `dy_diagnose` | 倒出页面真实状态（卡片数、滚动容器、验证码、登录墙、通道、前几条卡片原文） |
+| `dy_login` | 打开插件自己的浏览器并报告登录状态；未登录时引导你扫码（不代替输入、不绕验证码） |
 | `kb_hot` | 读抖音热榜（**匿名可用**），落进本地知识库 |
 | `kb_video` | 打开某条视频的播放器，读时长/元数据并抓一帧；可用 `modalId` 直接重开 |
 | `kb_search` | 搜索关键词；未登录时明确返回 `needs-login` |
