@@ -31,7 +31,7 @@
 
 - `kb_hot` — 热榜，匿名可用；`limit` 超过首屏会自动滚动补页（最多 4 次）
 - `kb_video` — 打开视频播放器，读时长/元数据并抓一帧；`modalId` 接受纯数字、`?modal_id=` 地址或 `/video/<id>` 分享链接
-- `kb_search` — 搜索；未登录 `needs-login`，上游 50x `upstream-error`，改版 `no-results`，参数不合法 `invalid-argument`
+- `kb_search` — 搜索。登录后走**按时长形状采集**（搜索结果既不是推荐流卡片类名、也没有 `<a href>`）；未登录 `needs-login`，上游 50x `upstream-error`，页面空白 `no-results`，参数不合法 `invalid-argument`
 - `kb_save` — 把当天采集内容落成 Markdown
 
 **B 运营（`ops_*`，默认关闭）**
