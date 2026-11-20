@@ -26,6 +26,16 @@ const samples = [
     expect: { durationSec: 281, likes: 3423, age: '10月22日' }
   },
   {
+    // hot-list row without an author (a topic aggregate): still a valid entry
+    text: '00:15 7777 热点：全员进入斜构图时代 384.1万人在看 · 2小时前',
+    expect: { durationSec: 15, likes: 7777, age: '2小时前' }
+  },
+  {
+    // hot-list row with tags + author, same shape as a feed card
+    text: '00:58 641 羊年限定迎来新人选？ #王者荣耀 #来抖音精选App看游戏 @王者阿灼 · 3天前',
+    expect: { durationSec: 58, likes: 641, author: '王者阿灼', age: '3天前' }
+  },
+  {
     // a promo tile with no title must be rejected rather than stored
     text: '共创 手机随时看更方便 下载 APP',
     expect: null

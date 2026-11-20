@@ -22,6 +22,7 @@ import * as store from './lib/store.js'
 import * as session from './lib/session.js'
 import { capabilities } from './lib/policy.js'
 import { buildWatchTools } from './lib/surfaces/watch.js'
+import { buildKbTools } from './lib/surfaces/kb.js'
 import { clampInt } from './lib/tool-util.js'
 
 export const inject = ['tools']
@@ -83,8 +84,9 @@ export function apply(ctx, config) {
   const caps = capabilities(cfg)
   const builders = []
   if (caps.watch) builders.push(buildWatchTools)
-  // kb / ops are added in later milestones; the gate already exists so enabling
-  // them early cannot accidentally expose write tools.
+  if (caps.kb) builders.push(buildKbTools)
+  // ops is added in M3; the gate already exists so enabling it early cannot
+  // accidentally expose write tools.
 
   const registered = []
   for (const build of builders) {
