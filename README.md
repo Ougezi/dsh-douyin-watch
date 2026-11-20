@@ -70,16 +70,36 @@ $DSH_HOME/plugin-data/dsh-douyin-watch/
 在 bundle patch 的 row `config` 里改：
 
 ```yaml
+# 浏览器：auto = Chrome 优先、Edge 兜底；edge = 只用 Edge；chrome = 只用 Chrome
+browserChannel: auto
+chromePath: ""
+headless: false
+
+# 观看额度
 cardsPerRound: 10
 dailyCards: 40
 dailyRounds: 4
 minIntervalMin: 30
 hours: [8, 24]
-headless: false
-chromePath: ""
 scrollRounds: 4
 scrollStepPx: 700
+
+# 预算（从 journal.jsonl 派生，不各自计数）
+dailyMinutes: 30
+dailyModelCalls: 120
+
+# 能力开关：关掉的能力不会注册工具，模型根本看不到
+enableKb: true
+enableOps: false
 ```
+
+## 浏览器通道：Chrome 与 Edge
+
+两者都是 Chromium，同一套 CDP 命令都通（已在 **Edge 157** 实测：启动、读流、开播放器、抓帧）。
+
+每个通道**各自一个 profile 目录**（`profile-chrome/`、`profile-edge/`），因为 Chrome 里的抖音登录态不会自动出现在 Edge 里。旧的单一 `profile/` 会在首次以 Chrome 运行时一次性迁移为 `profile-chrome/`。
+
+`auto` 通道下 Chrome 优先；想强制用 Edge 就设 `browserChannel: edge`。
 
 ## 已知限制（诚实版）
 

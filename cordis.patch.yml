@@ -1,15 +1,46 @@
-# Insert the Douyin watch loop as a Host-only bundle.
+# Insert the Douyin plugin as a Host-only bundle.
 #
-# One row, one plugin: it registers four model tools (dy_watch / dy_status /
-# dy_report / dy_diagnose) and needs nothing else from the Loader. Every knob is
-# optional and has a default in index.js -> resolveConfig().
+# One row, three capability surfaces sharing one browser substrate:
+#   watch  dy_*   autonomous watching (registered now)
+#   kb     kb_*   read-only knowledge source (M1)
+#   ops    ops_*  account writes, default OFF (M3)
+#
+# A capability that is off is not registered at all: a tool the model cannot see
+# is one it will not try. Every knob below has a default in index.js.
 - insert:
     - id: douyin-watch
       name: "dsh-douyin-watch"
       config:
+        # --- browser ---
+        # auto = Chrome first, then Edge. edge = Edge only. chrome = Chrome only.
+        browserChannel: auto
+        # Empty means auto-detect. Only needed to override a specific executable.
+        chromePath: ""
+        # Keep false while logging in: a captcha or QR dialog needs a real window.
+        headless: false
+
+        # --- surface A: watching ---
         cardsPerRound: 10
         dailyCards: 40
         dailyRounds: 4
         minIntervalMin: 30
         hours: [8, 24]
-        headless: false
+        scrollRounds: 4
+        scrollStepPx: 700
+
+        # --- budgets (derived from journal.jsonl) ---
+        dailyMinutes: 30
+        dailyModelCalls: 120
+
+        # --- surface C: read-only knowledge source ---
+        enableKb: true
+
+        # --- surface B: writes (opt-in, and each action still needs its own flag) ---
+        enableOps: false
+        dailyWriteActions: 0
+        ops:
+          allowLike: false
+          allowComment: false
+          allowReply: false
+          allowDm: false
+          allowPublish: false

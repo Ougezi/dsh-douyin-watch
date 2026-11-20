@@ -61,13 +61,32 @@ $DSH_HOME/plugin-data/dsh-douyin-watch/
 在 `cordis.patch.yml` 的 row `config` 里改：
 
 ```yaml
-cardsPerRound: 10   # 单轮上限
-dailyCards: 40      # 每日条数上限
-dailyRounds: 4      # 每日轮数上限
-minIntervalMin: 30  # 两轮最小间隔（分钟）
-hours: [8, 24]      # 允许观看的本地时段
-headless: false     # true 则不开窗口（登录时必须是 false）
-chromePath: ""      # 留空自动找 Chrome / Edge / Chromium
-scrollRounds: 4     # 每轮滚动几次触发加载
-scrollStepPx: 700   # 每次滚动多少像素
+browserChannel: auto  # auto=Chrome 优先、Edge 兜底；edge/chrome 强制单通道
+chromePath: ""        # 留空自动找；指定后优先于通道
+headless: false       # true 则不开窗口（登录时必须是 false）
+
+cardsPerRound: 10     # 单轮上限
+dailyCards: 40        # 每日条数上限
+dailyRounds: 4        # 每日轮数上限
+minIntervalMin: 30    # 两轮最小间隔（分钟）
+hours: [8, 24]        # 允许观看的本地时段
+scrollRounds: 4       # 每轮滚动几次触发加载
+scrollStepPx: 700     # 每次滚动多少像素
+
+dailyMinutes: 30      # 每日观看分钟预算（从 journal 派生）
+dailyModelCalls: 120  # 每日模型调用预算（真实成本闸门）
+
+enableKb: true        # C 层只读知识源（M1 起有工具）
+enableOps: false      # B 层写操作；关掉时 ops_* 根本不注册
 ```
+
+## 通道与 profile
+
+Chrome 与 Edge 都是 Chromium，共用同一套 CDP 命令（Edge 157 已实测）。两者**各自一个 profile 目录**：
+
+```
+profile-chrome/   profile-edge/
+```
+
+原因很实在：你在 Chrome 里扫码登录过抖音，Edge 那边不会自动有。旧的单一 `profile/` 会在首次以 Chrome 运行时**一次性迁移**成 `profile-chrome/`（迁移失败不致命，会继续用旧目录并记日志）。
+

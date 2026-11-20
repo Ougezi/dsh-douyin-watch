@@ -5,7 +5,7 @@
  *
  *   node scripts/test-parse.mjs
  */
-import { parseCard, parseLikes, parseDuration, cardId } from '../lib/feed.js'
+import { parseCard, parseLikes, parseDuration, cardId } from '../lib/adapters/douyin/feed.js'
 
 const samples = [
   {

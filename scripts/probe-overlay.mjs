@@ -4,7 +4,7 @@
  */
 import { Browser, findBrowser } from '../lib/cdp.js'
 import * as store from '../lib/store.js'
-import { FEED_URL, PROBE_SCRIPT, DISMISS_OVERLAY_SCRIPT } from '../lib/feed.js'
+import { FEED_URL, PROBE_SCRIPT, DISMISS_OVERLAY_SCRIPT } from '../lib/adapters/douyin/feed.js'
 
 const dir = store.ensureDirs()
 const exe = findBrowser('')
