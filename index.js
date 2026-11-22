@@ -24,6 +24,7 @@ import { capabilities } from './lib/policy.js'
 import { buildWatchTools } from './lib/surfaces/watch.js'
 import { buildKbTools } from './lib/surfaces/kb.js'
 import { buildOpsTools } from './lib/surfaces/ops.js'
+import { buildExtTools } from './lib/surfaces/ext.js'
 import { clampInt } from './lib/tool-util.js'
 
 export const inject = ['tools']
@@ -46,6 +47,12 @@ const DEFAULTS = {
   dailyMinutes: 180,
   dailyModelCalls: 120,
   enableKb: true,
+  enableDownload: true,
+  enableUser: true,
+  enableSearchUser: true,
+  enableExport: true,
+  enableBatch: true,
+  enableAccounts: true,
   enableOps: false,
   dailyWriteActions: 0,
   ops: {
@@ -92,6 +99,7 @@ export function apply(ctx, config) {
   if (caps.watch) builders.push(buildWatchTools)
   if (caps.kb) builders.push(buildKbTools)
   if (caps.ops) builders.push(buildOpsTools)
+  builders.push(buildExtTools)
   // No write tool exists yet on purpose: every douyin write surface needs a
   // signed-in account to verify, and unverified write code is not shipped.
 
